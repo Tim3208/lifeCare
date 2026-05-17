@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="이름 : " />
+
+    <EditText
+        android:id="@+id/userName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:hint="홍길동" />
+
+    <TextView
+        android:id="@+id/ageText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="나이 : " />
+
+    <EditText
+        android:id="@+id/age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:layout_margin="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:hint="20" />
+
+    <TextView
+        android:id="@+id/checkText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="다음 중, 해당 사항을 체크하세요." />
+
+    <CheckBox
+        android:id="@+id/nose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="비염" />
+
+    <CheckBox
+        android:id="@+id/skin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="아토피" />
+
+    <CheckBox
+        android:id="@+id/throat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="천식" />
+
+    <CheckBox
+        android:id="@+id/smoke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="흡연" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="저장" />
+
+</LinearLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="대시보드" />
+    <item
+        android:id="@+id/nav_health"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="건강 정보" />
+    <item
+        android:id="@+id/nav_guide"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="맞춤 가이드" />
+    <item
+        android:id="@+id/nav_more"
+        android:icon="@android:drawable/ic_menu_more"
+        android:title="더보기" />
+</menu>
