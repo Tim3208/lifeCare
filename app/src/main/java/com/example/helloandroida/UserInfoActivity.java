@@ -61,16 +61,6 @@ public class UserInfoActivity extends AppCompatActivity {
         String message = name + "님의 정보가 저장되었습니다.";
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 
-        /*
-         * Intent를 통한 데이터 전달
-         * Intent intent = new Intent(UserInfoActivity.this, ResultActivity.class);
-         * intent.putExtra("NAME", name);
-         * intent.putExtra("AGE", Integer.parseInt(ageStr));
-         * intent.putExtra("NOSE", hasNoseIssue);
-         * intent.putExtra("SKIN", hasSkinIssue);
-         * intent.putExtra("THROAT", hasThroatIssue);
-         * intent.putExtra("SMOKE", isSmoker);
-         * startActivity(intent);
-         */
+        finish();
     }
 }
