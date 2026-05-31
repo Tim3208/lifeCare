@@ -7,12 +7,18 @@ import com.example.lifecare.model.apiInfo;
 
 import com.example.lifecare.api.weatherInfo;
 import com.example.lifecare.model.weatherApiInfo;
+import com.example.lifecare.logic.Personalization;
+import com.example.lifecare.model.PersonalAdvice;
+import com.example.lifecare.location.AirStationSearchTask;
+import com.example.lifecare.location.OnLocationSearchListener;
+import com.example.lifecare.util.StringConversion;
 
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -65,6 +71,34 @@ public class MainActivity extends AppCompatActivity {
             }
 
             button.setEnabled(false);
+
+            new AirStationSearchTask(
+                    new StringConversion(),
+                    new OnLocationSearchListener() {
+
+                        @Override
+                        public void onSearchSuccess(
+                                String nx,
+                                String ny,
+                                String areaNo,
+                                String locationText
+                        ) {
+
+                            Log.d("LOCATION_TEST", "nx = " + nx);
+                            Log.d("LOCATION_TEST", "ny = " + ny);
+                            Log.d("LOCATION_TEST", "areaNo = " + areaNo);
+                            Log.d("LOCATION_TEST", "station = " + locationText);
+
+                        }
+
+                        @Override
+                        public void onSearchFailure() {
+
+                            Log.d("LOCATION_TEST", "실패");
+
+                        }
+                    }
+            ).execute(locationName);
 
             dustResult = "미세먼지 로딩 중...";
             uvResult = "자외선 로딩 중...";

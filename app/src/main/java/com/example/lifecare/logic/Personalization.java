@@ -22,6 +22,59 @@ public class Personalization {
 
     uvInfo ui = new uvInfo();
 
+
+
+
+    public PersonalAdvice testCalculate() {
+
+        UserSensitivity sensitivity = new UserSensitivity();
+
+        sensitivity.temperatureSensitivity = 5;
+        sensitivity.skinSensitivity = 5;
+        sensitivity.respiratorySensitivity = 5;
+
+        weatherApiInfo weather = new weatherApiInfo();
+        weather.tmp = "25";
+        weather.reh = "50";
+        weather.wsd = "2";
+
+        uvApiInfo uv = new uvApiInfo();
+        uv.todayUv = "4";
+
+        apiInfo dust = new apiInfo();
+        dust.pm10Text = "30";
+        dust.pm25Text = "15";
+
+        String temperatureGrade =
+                calcualte_temperature(
+                        weather,
+                        sensitivity.temperatureSensitivity
+                );
+
+        String skinGrade =
+                calculate_skin(
+                        uv,
+                        sensitivity.skinSensitivity
+                );
+
+        String respiratoryGrade =
+                calculate_respiratory(
+                        dust,
+                        weather,
+                        sensitivity.respiratorySensitivity
+                );
+
+        return new PersonalAdvice(
+                temperatureGrade,
+                skinGrade,
+                respiratoryGrade
+        );
+    }
+
+
+
+
+
     //지역명을 입력값으로 받아 PersonalAdvice 객체를 반환 -> 지역에 따른 온도등급, 호흡기/피부 위험도
     //아마 최졷결과화면에서 지역명을 입력받는 식으로 개발할듯
     public PersonalAdvice calculate(String livingRegion, int user_id) throws Exception{

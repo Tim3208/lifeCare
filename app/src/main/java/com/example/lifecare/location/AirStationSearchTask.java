@@ -74,8 +74,8 @@ public class AirStationSearchTask extends AsyncTask<String, Void, Bundle> {
 
                         // 좌표가 0이 아니고 정상적인 위치라면 기상청 바둑판 격자 좌표로 변환하기
                         if (!dmX.equals("0") && !dmY.equals("0")) {
-                            double lat = Double.parseDouble(dmY);
-                            double lon = Double.parseDouble(dmX);
+                            double lat = Double.parseDouble(dmX);
+                            double lon = Double.parseDouble(dmY);
                             LatLonToGrid grid = convertGRID_GPS(lat, lon);
                             // 계산되어 나온 기상청 가로 칸(nx), 세로 칸(ny) 번호를 저장
                             resultBundle.putString("nx", String.valueOf((int) grid.nx));
