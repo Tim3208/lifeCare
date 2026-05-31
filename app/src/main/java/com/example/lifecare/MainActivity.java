@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
+import android.content.Intent;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -42,6 +43,27 @@ public class MainActivity extends AppCompatActivity {
     // 공공데이터포털 자외선 API Key (영문+숫자 64자리)
     public static final String UV_API_key = "e5ff912d567087c0a95c6574dd728ff899c5422d182b1a0cf9374cbc9350720d";
 
+    private TextView selectedLocationText;
+
+    private TextView riskText;
+    private TextView riskDescText;
+
+    private TextView weatherText;
+    private TextView weatherDetailText;
+
+    private TextView dustText;
+    private TextView dustDetailText;
+
+    private TextView uvText;
+    private TextView uvDetailText;
+
+    private TextView temperatureRiskText;
+    private TextView skinRiskText;
+    private TextView respiratoryRiskText;
+
+    private TextView adviceText;
+
+    private Button btnOpenUserInfo;
     private EditText locationText;
     private TextView resultText;
     private TextView gradeText;
@@ -62,10 +84,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        selectedLocationText = findViewById(R.id.selectedLocationText);
+
+        riskText = findViewById(R.id.riskText);
+        riskDescText = findViewById(R.id.riskDescText);
+
+        weatherText = findViewById(R.id.weatherText);
+        weatherDetailText = findViewById(R.id.weatherDetailText);
+
+        dustText = findViewById(R.id.dustText);
+        dustDetailText = findViewById(R.id.dustDetailText);
+
+        uvText = findViewById(R.id.uvText);
+        uvDetailText = findViewById(R.id.uvDetailText);
+
+        temperatureRiskText = findViewById(R.id.temperatureRiskText);
+        skinRiskText = findViewById(R.id.skinRiskText);
+        respiratoryRiskText = findViewById(R.id.respiratoryRiskText);
+
+        adviceText = findViewById(R.id.adviceText);
+
+        btnOpenUserInfo = findViewById(R.id.btnOpenUserInfo);
+
         locationText = findViewById(R.id.locationText);
         resultText = findViewById(R.id.resultText);
         gradeText = findViewById(R.id.gradeText);
         button = findViewById(R.id.button);
+
+        btnOpenUserInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
+            startActivity(intent);
+        });
 
         button.setOnClickListener(view -> {
 
@@ -148,6 +197,24 @@ public class MainActivity extends AppCompatActivity {
 
             loadUvInfo("1111000000", uvTime);
         });
+        // 테스트용 더미 데이터
+//        riskText.setText("보통");
+//        riskDescText.setText("현재 환경은 대체로 안정적이지만, 호흡기 민감도가 있다면 외출 시 주의가 필요합니다.");
+//
+//        weatherText.setText("24°C · 구름많음");
+//        weatherDetailText.setText("습도 55% / 풍속 2m/s");
+//
+//        dustText.setText("PM10 30 / PM2.5 15");
+//        dustDetailText.setText("미세먼지 좋음 / 초미세먼지 좋음");
+//
+//        uvText.setText("4");
+//        uvDetailText.setText("오늘 자외선 지수");
+//
+//        temperatureRiskText.setText("온도 위험도: 보통");
+//        skinRiskText.setText("피부 위험도: 보통");
+//        respiratoryRiskText.setText("호흡기 위험도: 안전");
+//
+//        adviceText.setText("오늘은 야외 활동이 가능하지만, 장시간 외출 시 자외선 차단제를 사용하는 것을 권장합니다.");
     }
 
     // ======================
