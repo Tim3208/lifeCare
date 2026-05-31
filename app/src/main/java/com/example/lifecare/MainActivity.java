@@ -51,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
     private String dustResult = "";
     private String uvResult = "";
 
+    // 위치 정보 저장
+    private String nx;
+    private String ny;
+    private String areaNo;
+    private String stationName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,12 +89,39 @@ public class MainActivity extends AppCompatActivity {
                                 String areaNo,
                                 String locationText
                         ) {
-
                             Log.d("LOCATION_TEST", "nx = " + nx);
                             Log.d("LOCATION_TEST", "ny = " + ny);
-                            Log.d("LOCATION_TEST", "areaNo = " + areaNo);
-                            Log.d("LOCATION_TEST", "station = " + locationText);
 
+                            new Thread(() -> {
+
+                                try {
+
+                                    weatherInfo wi =
+                                            new weatherInfo();
+
+                                    weatherApiInfo weather =
+                                            wi.fetchWeatherInfo(nx, ny);
+
+                                    Log.d(
+                                            "WEATHER_TEST",
+                                            "기온 = " + weather.tmp
+                                    );
+
+                                    Log.d(
+                                            "WEATHER_TEST",
+                                            "습도 = " + weather.reh
+                                    );
+
+                                    Log.d(
+                                            "WEATHER_TEST",
+                                            "하늘 = " + weather.sky
+                                    );
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }).start();
                         }
 
                         @Override

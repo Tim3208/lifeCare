@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Calendar;
+import android.util.Log;
 
 import com.example.lifecare.util.StringConversion;
 
@@ -59,7 +60,6 @@ public class weatherInfo {
 
                 inputStream = connection.getInputStream();
                 //응답 데이터를 읽어옴
-
             }
 
             String response = sc.readStream(inputStream);
