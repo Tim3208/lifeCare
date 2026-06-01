@@ -222,23 +222,23 @@ public class MainActivity extends AppCompatActivity {
             loadUvInfo("1111000000", uvTime);
         });
         // 테스트용 더미 데이터
-//        riskText.setText("보통");
-//        riskDescText.setText("현재 환경은 대체로 안정적이지만, 호흡기 민감도가 있다면 외출 시 주의가 필요합니다.");
-//
-//        weatherText.setText("24°C · 구름많음");
-//        weatherDetailText.setText("습도 55% / 풍속 2m/s");
-//
-//        dustText.setText("PM10 30 / PM2.5 15");
-//        dustDetailText.setText("미세먼지 좋음 / 초미세먼지 좋음");
-//
-//        uvText.setText("4");
-//        uvDetailText.setText("오늘 자외선 지수");
-//
-//        temperatureRiskText.setText("온도 위험도: 보통");
-//        skinRiskText.setText("피부 위험도: 보통");
-//        respiratoryRiskText.setText("호흡기 위험도: 안전");
-//
-//        adviceText.setText("오늘은 야외 활동이 가능하지만, 장시간 외출 시 자외선 차단제를 사용하는 것을 권장합니다.");
+        riskText.setText("보통");
+        riskDescText.setText("현재 환경은 대체로 안정적이지만, 호흡기 민감도가 있다면 외출 시 주의가 필요합니다.");
+
+        weatherText.setText("24°C · 구름많음");
+        weatherDetailText.setText("습도 55% / 풍속 2m/s");
+
+        dustText.setText("PM10 30 / PM2.5 15");
+        dustDetailText.setText("미세먼지 좋음 / 초미세먼지 좋음");
+
+        uvText.setText("4");
+        uvDetailText.setText("오늘 자외선 지수");
+
+        temperatureRiskText.setText("온도 위험도: 보통");
+        skinRiskText.setText("피부 위험도: 보통");
+        respiratoryRiskText.setText("호흡기 위험도: 안전");
+
+        adviceText.setText("오늘은 야외 활동이 가능하지만, 장시간 외출 시 자외선 차단제를 사용하는 것을 권장합니다.");
     }
 
     // ======================

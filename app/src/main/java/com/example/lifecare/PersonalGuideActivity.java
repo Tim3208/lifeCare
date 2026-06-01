@@ -23,18 +23,29 @@ public class PersonalGuideActivity extends AppCompatActivity {
     private PersonalAdvice pa;
 
     public void loadPersonal() {
-        new Thread(() -> {
-            try {
-                PersonalAdvice result = ps.calculate("노원구", 1);
+        //정상 작동시 로직 (현재 "노원구", 1로 고정)
+//        new Thread(() -> {
+//            try {
+//                PersonalAdvice result = ps.calculate("노원구", 1);
+//
+//                runOnUiThread(() -> {
+//                    pa = result;
+//                    showAdvice(pa);
+//                });
+//            } catch (Exception ex) {
+//                runOnUiThread(() -> showErrorState(ex));
+//            }
+//        }).start();
 
-                runOnUiThread(() -> {
-                    pa = result;
-                    showAdvice(pa);
-                });
-            } catch (Exception ex) {
-                runOnUiThread(() -> showErrorState(ex));
-            }
-        }).start();
+        //테스트용 더미 데이터
+        PersonalAdvice result = new PersonalAdvice(
+                "보통",
+                "보통",
+                "안전"
+        );
+
+        pa = result;
+        showAdvice(pa);
     }
 
     @Override
