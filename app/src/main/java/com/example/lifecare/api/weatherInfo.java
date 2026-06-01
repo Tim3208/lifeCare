@@ -11,12 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Calendar;
+import android.util.Log;
 
 import com.example.lifecare.util.StringConversion;
 
 public class weatherInfo {
 
-    String weather_API_key = "Q-n1Z1EwQcqp9WdRMCHKAw";
+    String weather_API_key = "https://apihub.kma.go.kr/api/typ01/cgi-bin/url/nph-dfs_shrt_grd?tmfc=2024022505&tmef=2024022506&vars=TMP&authKey=Q-n1Z1EwQcqp9WdRMCHKAw";
 
 
     public weatherApiInfo fetchWeatherInfo(String nx, String ny) throws Exception {
@@ -24,6 +25,8 @@ public class weatherInfo {
         String current_time = criteriaTime();
         String apiUrl = buildAPiUrl_weather(nx, ny, current_date, current_time);
         //API 주소 생성, 사용자애게 입력받은 주소 이용
+
+        Log.d("WEATHER_TEST", "URL = " + apiUrl);
 
         HttpURLConnection connection = null;
         // 서버와 연결하기 위한 객체입니다
@@ -51,6 +54,8 @@ public class weatherInfo {
             int responseCode = connection.getResponseCode();
             //서버 응답 코드를 가져옴.
 
+            Log.d("WEATHER_TEST", "responseCode = " + responseCode);
+
             InputStream inputStream = null;
             //서버 응답 데이터를 읽을 통로를 선언
 
@@ -60,10 +65,17 @@ public class weatherInfo {
                 inputStream = connection.getInputStream();
                 //응답 데이터를 읽어옴
 
+            } else {
+                //응답 코드가 200번대가 아니면 오류
+
+                inputStream = connection.getErrorStream();
+                //오류 데이터를 읽어옴
             }
 
             String response = sc.readStream(inputStream);
             //서버에서 받은 데이터를 문자열로 변환
+
+            Log.d("WEATHER_RESPONSE", response);
 
             if (responseCode != 200) {
                 //응답 코드가 정확히 200이 아니면 오류
@@ -150,7 +162,7 @@ public class weatherInfo {
         String baseUrl = "https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0/getVilageFcst";
         //요청메시지 앞부분(URL)
         return baseUrl
-                + "?authKey=" + weather_API_key
+                + "?authKey=" + java.net.URLEncoder.encode(weather_API_key, "UTF-8")
                 + "&pageNo=1"
                 + "&numOfRows=1000"
                 + "&dataType=JSON"

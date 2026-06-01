@@ -1,12 +1,14 @@
 package com.example.lifecare;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.room.Room;
 
 import com.example.lifecare.db.AppDatabase;
 import com.example.lifecare.model.UserProfile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -40,6 +42,32 @@ public class UserInfoActivity extends AppCompatActivity {
         chkThroat = findViewById(R.id.throat);
         chkSmoke = findViewById(R.id.smoke);
         btnSave = findViewById(R.id.btnSave);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setSelectedItemId(R.id.nav_health);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_dashboard) {
+                Intent intent = new Intent(UserInfoActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+
+            } else if (id == R.id.nav_health) {
+                return true;
+
+            } else if (id == R.id.nav_guide) {
+                Intent intent = new Intent(UserInfoActivity.this, PersonalGuideActivity.class);
+                startActivity(intent);
+                return true;
+
+            } else if (id == R.id.nav_more) {
+                return true;
+            }
+
+            return false;
+        });
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,10 +1,10 @@
 package com.example.lifecare;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.example.lifecare.api.DustInfo;
 import com.example.lifecare.model.apiInfo;
-
 import com.example.lifecare.api.weatherInfo;
 import com.example.lifecare.model.weatherApiInfo;
 import com.example.lifecare.logic.Personalization;
@@ -110,6 +110,31 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_dashboard) {
+                return true;
+
+            } else if (id == R.id.nav_health) {
+                Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
+                startActivity(intent);
+                return true;
+
+            } else if (id == R.id.nav_guide) {
+                Intent intent = new Intent(MainActivity.this, PersonalGuideActivity.class);
+                startActivity(intent);
+                return true;
+
+            } else if (id == R.id.nav_more) {
+                return true;
+            }
+
+            return false;
+        });
+
         button.setOnClickListener(view -> {
 
             String locationName = locationText.getText().toString().trim();
@@ -138,6 +163,38 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("LOCATION_TEST", "areaNo = " + areaNo);
                             Log.d("LOCATION_TEST", "station = " + locationText);
 
+                            runOnUiThread(() -> {
+                                selectedLocationText.setText("현재 선택된 지역: " + locationText);
+                                weatherText.setText("날씨 정보 불러오는 중...");
+                                weatherDetailText.setText("잠시만 기다려주세요.");
+                            });
+
+                            new Thread(() -> {
+                                try {
+                                    weatherInfo wi = new weatherInfo();
+                                    weatherApiInfo weather = wi.fetchWeatherInfo(nx, ny);
+
+                                    Log.d("WEATHER_TEST", "기온 = " + weather.tmp);
+                                    Log.d("WEATHER_TEST", "습도 = " + weather.reh);
+                                    Log.d("WEATHER_TEST", "하늘 = " + weather.sky);
+                                    Log.d("WEATHER_TEST", "풍속 = " + weather.wsd);
+
+                                    runOnUiThread(() -> {
+                                        weatherText.setText(weather.tmp + "°C · " + weather.sky);
+                                        weatherDetailText.setText(
+                                                "습도 " + weather.reh + "% / 풍속 " + weather.wsd + "m/s"
+                                        );
+                                    });
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+
+                                    runOnUiThread(() -> {
+                                        weatherText.setText("날씨 정보 조회 실패");
+                                        weatherDetailText.setText("날씨 API 응답을 확인해주세요.");
+                                    });
+                                }
+                            }).start();
                         }
 
                         @Override
