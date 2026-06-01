@@ -1,6 +1,9 @@
 package com.example.lifecare.logic;
 
+import android.os.Bundle;
+
 import com.example.lifecare.db.AppDatabase;
+import com.example.lifecare.location.AirStationSearchTask;
 import com.example.lifecare.model.PersonalAdvice;
 import com.example.lifecare.model.UserSensitivity;
 import com.example.lifecare.model.weatherApiInfo;
@@ -10,6 +13,7 @@ import com.example.lifecare.model.apiInfo;
 import com.example.lifecare.api.weatherInfo;
 import com.example.lifecare.api.DustInfo;
 import com.example.lifecare.api.uvInfo;
+import com.example.lifecare.util.StringConversion;
 
 public class Personalization {
 
@@ -25,67 +29,71 @@ public class Personalization {
 
 
 
-    public PersonalAdvice testCalculate() {
-
-        UserSensitivity sensitivity = new UserSensitivity();
-
-        sensitivity.temperatureSensitivity = 5;
-        sensitivity.skinSensitivity = 5;
-        sensitivity.respiratorySensitivity = 5;
-
-        weatherApiInfo weather = new weatherApiInfo();
-        weather.tmp = "25";
-        weather.reh = "50";
-        weather.wsd = "2";
-
-        uvApiInfo uv = new uvApiInfo();
-        uv.todayUv = "4";
-
-        apiInfo dust = new apiInfo();
-        dust.pm10Text = "30";
-        dust.pm25Text = "15";
-
-        String temperatureGrade =
-                calcualte_temperature(
-                        weather,
-                        sensitivity.temperatureSensitivity
-                );
-
-        String skinGrade =
-                calculate_skin(
-                        uv,
-                        sensitivity.skinSensitivity
-                );
-
-        String respiratoryGrade =
-                calculate_respiratory(
-                        dust,
-                        weather,
-                        sensitivity.respiratorySensitivity
-                );
-
-        return new PersonalAdvice(
-                temperatureGrade,
-                skinGrade,
-                respiratoryGrade
-        );
-    }
+//    public PersonalAdvice testCalculate() {
+//
+//        UserSensitivity sensitivity = new UserSensitivity();
+//
+//        sensitivity.temperatureSensitivity = 5;
+//        sensitivity.skinSensitivity = 5;
+//        sensitivity.respiratorySensitivity = 5;
+//
+//        weatherApiInfo weather = new weatherApiInfo();
+//        weather.tmp = "25";
+//        weather.reh = "50";
+//        weather.wsd = "2";
+//
+//        uvApiInfo uv = new uvApiInfo();
+//        uv.todayUv = "4";
+//
+//        apiInfo dust = new apiInfo();
+//        dust.pm10Text = "30";
+//        dust.pm25Text = "15";
+//
+//        String temperatureGrade =
+//                calcualte_temperature(
+//                        weather,
+//                        sensitivity.temperatureSensitivity
+//                );
+//
+//        String skinGrade =
+//                calculate_skin(
+//                        uv,
+//                        sensitivity.skinSensitivity
+//                );
+//
+//        String respiratoryGrade =
+//                calculate_respiratory(
+//                        dust,
+//                        weather,
+//                        sensitivity.respiratorySensitivity
+//                );
+//
+//        return new PersonalAdvice(
+//                temperatureGrade,
+//                skinGrade,
+//                respiratoryGrade
+//        );
+//    }
 
 
 
 
 
     //지역명을 입력값으로 받아 PersonalAdvice 객체를 반환 -> 지역에 따른 온도등급, 호흡기/피부 위험도
-    //아마 최졷결과화면에서 지역명을 입력받는 식으로 개발할듯
     public PersonalAdvice calculate(String livingRegion, int user_id) throws Exception{
-        //지역명 변환함수? 가 완성되면 이곳에서 사용해 함수별로 필요한 값을 얻음
+        Bundle locationBundle = new AirStationSearchTask(new StringConversion(), null).execute(livingRegion).get();
 
-        //임시
         String nx = "0";
         String ny = "0";
         String areaNo = "0";
         String locationText = "0";
-        //db에서 사용자 민감도를 가져옴
+
+        if (locationBundle != null) {
+            nx = locationBundle.getString("nx", "0");
+            ny = locationBundle.getString("ny", "0");
+            areaNo = locationBundle.getString("areaNo", "0");
+            locationText = locationBundle.getString("locationTextValue", "0");
+        }
         UserSensitivity sensitivity = db.userSensitivityDao().getByUserId(user_id);
 
         if (sensitivity == null) {//민감도가 없으면 초기 민감도 생성
@@ -98,18 +106,20 @@ public class Personalization {
         uvApiInfo uv = ui.fetchUvInfo(areaNo);
         apiInfo dust = di.fetchDustInfo(locationText);
 
-        String temperatureGrade = calcualte_temperature(weather, sensitivity.temperatureSensitivity);
+        String temperatureGrade = toTemperatureGrade(calcualte_temperature(weather, sensitivity.temperatureSensitivity));
 
-        String skinGrade = calculate_skin(uv, sensitivity.skinSensitivity);
+        String skinGrade = toRiskGrade(calculate_skin(uv, sensitivity.skinSensitivity));
 
-        String respiratoryGrade = calculate_respiratory(dust, weather, sensitivity.respiratorySensitivity);
+        String respiratoryGrade = toRiskGrade(calculate_respiratory(dust, weather, sensitivity.respiratorySensitivity));
 
-        return new PersonalAdvice(temperatureGrade, skinGrade, respiratoryGrade);
+        String totalRiskScore = Integer.toString(calculateTotalRiskScore(weather, uv, dust, sensitivity));
+
+        return new PersonalAdvice(temperatureGrade, skinGrade, respiratoryGrade, totalRiskScore);
 
 
     }
-    //온도 위험도 계산 -> 매우추움/추움/보통/더움/매우더움 반환 -> 개인화 체감온도 등급
-    private String calcualte_temperature(weatherApiInfo weather, double sensitivity){
+    //온도 위험도 계산
+    private double calcualte_temperature(weatherApiInfo weather, double sensitivity){
         double tmp = toDouble(weather.tmp);
         double reh = toDouble(weather.reh);
         double wsd = toDouble(weather.wsd);
@@ -153,7 +163,10 @@ public class Personalization {
         }
         //온도 민감도 반영
         rt += (sensitivity - 5.0) * 0.8;
-
+        return rt;
+    }
+    //매우추움/추움/보통/더움/매우더움 반환 -> 개인화 체감온도 등급
+    private String toTemperatureGrade(double rt) {
         if (rt <= 5) {
             return "매우추움";
         } else if (rt < 17) {
@@ -167,16 +180,16 @@ public class Personalization {
         }
     }
     //피부(자외선) 위험도 계산
-    private String calculate_skin(uvApiInfo uv, double sensitivity){
+    private double calculate_skin(uvApiInfo uv, double sensitivity){
         double uvRisk = toDouble(uv.todayUv);
 
         double personalRisk = applyRiskSensitivity(uvRisk, sensitivity);
 
-        return toRiskGrade(personalRisk);
+        return personalRisk;
 
     }
     //호흡기 위험도 계산
-    private String calculate_respiratory(apiInfo dust, weatherApiInfo weather, double respiratorySensitivity){
+    private double calculate_respiratory(apiInfo dust, weatherApiInfo weather, double respiratorySensitivity){
 
         double pm10Risk = 0;
         double pm25Risk = 0;
@@ -195,7 +208,7 @@ public class Personalization {
 
         double personalRisk = applyRiskSensitivity(environmentRisk, respiratorySensitivity);
 
-        return toRiskGrade(personalRisk);
+        return personalRisk;
     }
     //미세먼지 수치 -> 위험도 변환
     private double calculatePm10Risk(double pm10Value) {
@@ -283,6 +296,56 @@ public class Personalization {
         } else {
             return "필수";
         }
+    }
+    //종합위험도 계산
+    private int calculateTotalRiskScore(
+            weatherApiInfo weather,
+            uvApiInfo uv,
+            apiInfo dust,
+            UserSensitivity sensitivity
+    ) {
+        double temperatureScore = calculateTemperatureRisk100(weather, sensitivity.temperatureSensitivity);
+
+        double skinScore = normalizeRiskTo100(calculate_skin(uv, sensitivity.skinSensitivity));
+
+        double respiratoryScore = normalizeRiskTo100(calculate_respiratory(dust, weather, sensitivity.respiratorySensitivity));
+
+        //온도 30%, 피부 30%, 호흡기 40% 반영
+        double totalScore = temperatureScore * 0.30 + skinScore * 0.30 + respiratoryScore * 0.40;
+
+        return (int) Math.round(totalScore);
+    }
+
+    //온도 위험도 100점 환산
+    private double calculateTemperatureRisk100(weatherApiInfo weather, double sensitivity) {
+        double rt = calcualte_temperature(weather, sensitivity);
+
+        //쾌적 범위
+        if (rt >= 17 && rt < 27) {
+            return 10;
+        }
+
+        //추운 쪽 위험도
+        if (rt < 17) {
+            if (rt <= 5) {
+                return 85 + (5 - rt) * 3;
+            }
+
+            return 30 + ((17 - rt) / 12.0) * 45;
+        }
+
+        //더운 쪽 위험도
+        if (rt < 32) {
+            return 30 + ((rt - 27) / 5.0) * 45;
+        }
+
+        return 85 + (rt - 32) * 3;
+    }
+
+    //기존 위험도 원점수를 100점 만점으로 환산
+    private double normalizeRiskTo100(double rawRisk) {
+        //기존 위험도는 대략 0~10 기준으로 보고 100점 만점으로 변환
+        return (rawRisk / 10.0) * 100.0;
     }
 
 }

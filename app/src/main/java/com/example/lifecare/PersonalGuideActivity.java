@@ -41,7 +41,8 @@ public class PersonalGuideActivity extends AppCompatActivity {
         PersonalAdvice result = new PersonalAdvice(
                 "보통",
                 "보통",
-                "안전"
+                "안전",
+                "보통"
         );
 
         pa = result;
@@ -101,9 +102,7 @@ public class PersonalGuideActivity extends AppCompatActivity {
         }
 
         guideTitleText.setText("오늘의 맞춤 가이드");
-        totalRiskScoreText.setText("종합 위험도: " + advice.temperatureRiskGrade
-                + " / 피부 " + advice.skinRiskGrade
-                + " / 호흡기 " + advice.respiratoryRiskGrade);
+        totalRiskScoreText.setText("종합 위험도: " + advice.totalRiskScore);
         temperatureGuideText.setText(buildTemperatureGuide(advice));
         skinGuideText.setText(buildSkinGuide(advice));
         respiratoryGuideText.setText(buildRespiratoryGuide(advice));
