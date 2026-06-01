@@ -73,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
     private String dustResult = "";
     private String uvResult = "";
 
+    // 위치 정보 저장
+    private String nx;
+    private String ny;
+    private String areaNo;
+    private String stationName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,11 +163,8 @@ public class MainActivity extends AppCompatActivity {
                                 String areaNo,
                                 String locationText
                         ) {
-
                             Log.d("LOCATION_TEST", "nx = " + nx);
                             Log.d("LOCATION_TEST", "ny = " + ny);
-                            Log.d("LOCATION_TEST", "areaNo = " + areaNo);
-                            Log.d("LOCATION_TEST", "station = " + locationText);
 
                             runOnUiThread(() -> {
                                 selectedLocationText.setText("현재 선택된 지역: " + locationText);
